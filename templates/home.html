@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Headlines</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 56px;
+        }
+        .news-item {
+            margin-bottom: 30px;
+        }
+        .news-item h5 {
+            font-weight: bold;
+        }
+        .news-item p {
+            margin: 0;
+        }
+        .news-item small {
+            color: grey;
+        }
+        .jumbotron {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="/">AI News</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/note">Write a Note</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/notes">View Notes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/overview">Overview</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <!-- Introductory Section -->
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to AI News</h1>
+            <p class="lead">This website is dedicated to providing the latest news and updates on artificial intelligence. Our goal is to keep you informed about the latest advancements, research, and applications of AI across various industries.</p>
+            <hr class="my-4">
+            <h2>About This Site</h2>
+            <p>This site is for anyone interested in AI, including researchers, developers, business professionals, and enthusiasts. Whether you are a seasoned expert or just getting started in the field, you'll find valuable insights and information here.</p>
+            <h2>Why It Is Valuable</h2>
+            <p>AI is transforming the world at an unprecedented pace. Staying updated with the latest developments is crucial for understanding its impact and leveraging its potential. Our site provides curated news and summaries to help you stay ahead in the AI landscape.</p>
+        </div>
+        <!-- News Headlines Section -->
+        <h1 class="my-4">Latest AI News Headlines</h1>
+        <div class="row">
+            {% for article in articles %}
+                <div class="col-md-6 news-item">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h5>
+                            <p class="card-text">{{ article.summary }}</p>
+                            <small>Published at: {{ article.publishedAt }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
