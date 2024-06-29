@@ -1,5 +1,9 @@
-runtime: python38
+runtime: python39  # Use python37 or python38 if you are using those versions
+entrypoint: gunicorn -b :$PORT app:app  # Replace 'app:app' with the actual entry point of your Flask app
 
 handlers:
 - url: /.*
   script: auto
+
+manual_scaling:
+  instances: 1
