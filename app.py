@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import requests
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///notes.db'
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///notes.db')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 db = SQLAlchemy(app)
 
 NEWS_API_KEY = '1fd07a62200244a1b171dbcdc79ac99f'
@@ -68,23 +69,6 @@ def home():
         })
     return render_template('home.html', articles=summarized_articles)
 
-@app.route('/news')
-def news():
-    articles = fetch_ai_news()
-    summarized_articles = []
-    for article in articles:
-        description = article.get('description', '')
-        if not description:
-            continue
-        summary = summarize_article(description)
-        summarized_articles.append({
-            'title': article['title'],
-            'url': article['url'],
-            'summary': summary,
-            'publishedAt': article['publishedAt']
-        })
-    return render_template('news.html', articles=summarized_articles)
-
 @app.route('/overview')
 def overview():
     articles = fetch_ai_news()
@@ -108,6 +92,4 @@ def notes():
     return render_template('notes.html', notes=notes)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
