@@ -15,6 +15,12 @@ NEWS_API_URL = 'https://newsapi.org/v2/everything'
 HF_API_KEY = os.getenv('HF_API_KEY', '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')
 HF_API_URL = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn'
 
+# Print the secret keys for verification purposes (remember to remove this after verification)
+print(f"Database URL: {app.config['SQLALCHEMY_DATABASE_URI']}")
+print(f"Secret Key: {app.config['SECRET_KEY']}")
+print(f"News API Key: {NEWS_API_KEY}")
+print(f"Hugging Face API Key: {HF_API_KEY}")
+
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
