@@ -1,4 +1,4 @@
-#!/Users/bertomill/ai_news_app/venv/bin/python3.12
+#!/Users/bertomill/ai_news_app/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
