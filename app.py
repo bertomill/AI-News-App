@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import requests
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///notes.db')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 NEWS_API_KEY = '1fd07a62200244a1b171dbcdc79ac99f'
 NEWS_API_URL = 'https://newsapi.org/v2/everything'
@@ -18,9 +20,14 @@ class Note(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
 
-def fetch_ai_news():
+class UserPreference(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    preferences = db.Column(db.String(200), nullable=False)
+
+def fetch_ai_news(query='artificial intelligence'):
     params = {
-        'q': 'artificial intelligence',
+        'q': query,
         'apiKey': NEWS_API_KEY,
         'language': 'en',
         'sortBy': 'publishedAt',
@@ -52,9 +59,29 @@ def summarize_article(text):
         print(f"Response content: {response.content}")
         raise
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    articles = fetch_ai_news()
+    user_id = 1  # Assuming a single user for simplicity
+
+    if request.method == 'POST':
+        preferences = request.form.getlist('preferences')
+        preferences_str = ','.join(preferences)
+        user_pref = UserPreference.query.filter_by(user_id=user_id).first()
+        if user_pref:
+            user_pref.preferences = preferences_str
+        else:
+            new_pref = UserPreference(user_id=user_id, preferences=preferences_str)
+            db.session.add(new_pref)
+        db.session.commit()
+
+    user_pref = UserPreference.query.filter_by(user_id=user_id).first()
+    if user_pref:
+        preferences = user_pref.preferences.split(',')
+        articles = []
+        for pref in preferences:
+            articles += fetch_ai_news(pref)
+    else:
+        articles = fetch_ai_news()
     summarized_articles = []
     for article in articles:
         description = article.get('description', '')
@@ -65,9 +92,10 @@ def home():
             'title': article['title'],
             'url': article['url'],
             'summary': summary,
-            'publishedAt': article['publishedAt']
+            'publishedAt': article['publishedAt'],
+            'urlToImage': article.get('urlToImage', '')  # Include the image URL
         })
-    return render_template('home.html', articles=summarized_articles)
+    return render_template('home.html', articles=summarized_articles, user_pref=user_pref)
 
 @app.route('/overview')
 def overview():

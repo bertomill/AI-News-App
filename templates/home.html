@@ -8,21 +8,63 @@
     <style>
         body {
             padding-top: 56px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .hero {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .hero h1 {
+            font-weight: bold;
+            font-size: 2.5rem;
+        }
+        .hero p {
+            font-size: 1rem;
+        }
+        .container h1 {
+            margin: 40px 0 20px;
+            font-weight: bold;
+            color: #333;
         }
         .news-item {
             margin-bottom: 30px;
         }
+        .news-item .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
         .news-item h5 {
             font-weight: bold;
+            font-size: 1.2rem;
         }
         .news-item p {
             margin: 0;
+            color: #555;
         }
         .news-item small {
-            color: grey;
+            color: #999;
         }
-        .jumbotron {
-            margin-bottom: 30px;
+        .news-item .card-body {
+            padding: 20px;
+        }
+        .news-item img {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            width: 100%;
+            height: auto;
         }
     </style>
 </head>
@@ -45,21 +87,22 @@
     </nav>
     <div class="container mt-5">
         <!-- Introductory Section -->
-        <div class="jumbotron">
-            <h1 class="display-4">Welcome to AI News</h1>
-            <p class="lead">This website is dedicated to providing the latest news and updates on artificial intelligence. Our goal is to keep you informed about the latest advancements, research, and applications of AI across various industries.</p>
-            <hr class="my-4">
-            <h2>About This Site</h2>
-            <p>This site is for anyone interested in AI, including researchers, developers, business professionals, and enthusiasts. Whether you are a seasoned expert or just getting started in the field, you'll find valuable insights and information here.</p>
-            <h2>Why It Is Valuable</h2>
-            <p>AI is transforming the world at an unprecedented pace. Staying updated with the latest developments is crucial for understanding its impact and leveraging its potential. Our site provides curated news and summaries to help you stay ahead in the AI landscape.</p>
+        <div class="hero">
+            <h1>Welcome to AI News</h1>
+            <p>Stay updated with the latest AI news and research.</p>
+            <p><strong>What This App Is:</strong> A hub for the latest advancements and updates in artificial intelligence.</p>
+            <p><strong>Who It's For:</strong> Researchers, developers, business professionals, and AI enthusiasts.</p>
+            <p><strong>How It Helps:</strong> Provides curated news and insights to keep you ahead in the AI landscape.</p>
         </div>
         <!-- News Headlines Section -->
-        <h1 class="my-4">Latest AI News Headlines</h1>
+        <h1 class="text-center">Latest AI News Headlines</h1>
         <div class="row">
             {% for article in articles %}
                 <div class="col-md-6 news-item">
                     <div class="card">
+                        {% if article.urlToImage %}
+                            <img src="{{ article.urlToImage }}" class="card-img-top" alt="Image for {{ article.title }}">
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h5>
                             <p class="card-text">{{ article.summary }}</p>
