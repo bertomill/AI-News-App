@@ -10,9 +10,9 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your_secret_key')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-NEWS_API_KEY = '1fd07a62200244a1b171dbcdc79ac99f'
+NEWS_API_KEY = os.getenv('NEWS_API_KEY', '1fd07a62200244a1b171dbcdc79ac99f')
 NEWS_API_URL = 'https://newsapi.org/v2/everything'
-HF_API_KEY = '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'
+HF_API_KEY = os.getenv('HF_API_KEY', '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')
 HF_API_URL = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn'
 
 class Note(db.Model):
@@ -46,18 +46,14 @@ def summarize_article(text):
     headers = {"Authorization": f"Bearer {HF_API_KEY}"}
     payload = {"inputs": text[:1024], "parameters": {"max_length": 130, "min_length": 30, "do_sample": False}}
     
-    # Debugging information
-    print(f"Sending request to Hugging Face API with payload: {payload}")
-    
     response = requests.post(HF_API_URL, headers=headers, json=payload)
     try:
         response.raise_for_status()
         summary = response.json()[0]['summary_text']
         return summary
     except requests.exceptions.HTTPError as e:
-        print(f"HTTPError: {e}")
-        print(f"Response content: {response.content}")
-        raise
+        flash(f"An error occurred while summarizing article: {e}", 'danger')
+        return ""
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -93,7 +89,7 @@ def home():
             'url': article['url'],
             'summary': summary,
             'publishedAt': article['publishedAt'],
-            'urlToImage': article.get('urlToImage', '')  # Include the image URL
+            'urlToImage': article.get('urlToImage', '')
         })
     return render_template('home.html', articles=summarized_articles, user_pref=user_pref)
 

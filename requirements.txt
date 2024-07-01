@@ -3,4 +3,7 @@ gunicorn==20.1.0
 transformers==4.10.0
 tqdm==4.62.0
 numpy==1.21.0
-tokenizers==0.10.3  # Adjust this version if necessary
+tokenizers==0.10.3
+flask_sqlalchemy==2.5.1
+flask_migrate==3.1.0
+requests==2.26.0
